@@ -5,7 +5,7 @@
 AssetProcessor::AssetProcessor(int thread_count)
     : thread_pool_(std::max(1, thread_count)),
       replace_request_(),
-      audio_processor_(replace_request_),
+      audio_processor_(thread_pool_, replace_request_),
       texture_processor_(thread_pool_, replace_request_),
       model_processor_(texture_processor_, replace_request_) {}
 
@@ -46,7 +46,7 @@ void AssetProcessor::Process(
 
 void AssetProcessor::EncodeAssets(AssetsAnalyzer& assets_analyzer) {
   /// for music(.ogg) & sounds(.wav) just copy
-  auto music_to_process = assets_analyzer.GetMusicToProcess();
+  /*auto music_to_process = assets_analyzer.GetMusicToProcess();
   for (const auto& path : music_to_process) {
     std::cout << "--> encoding: " << path << std::endl;
     audio_processor_.EncodeMusic(path);
@@ -55,7 +55,7 @@ void AssetProcessor::EncodeAssets(AssetsAnalyzer& assets_analyzer) {
   for (const auto& path : sounds_to_process) {
     std::cout << "--> encoding: " << path << std::endl;
     audio_processor_.EncodeSound(path);
-  }
+  }*/
 
   /// models always before textures to not to process models textures twice,
   /// so then we just remove already processed (see below in this function)
@@ -85,7 +85,7 @@ void AssetProcessor::EncodeAssets(AssetsAnalyzer& assets_analyzer) {
 
 void AssetProcessor::DecodeAssets(AssetsAnalyzer& assets_analyzer) {
   /// for music(.ogg) & sounds(.wav) just copy
-  auto music_to_process = assets_analyzer.GetMusicToProcess();
+  /*auto music_to_process = assets_analyzer.GetMusicToProcess();
   for (const auto& path : music_to_process) {
     std::cout << "--> decoding: " << path << std::endl;
     audio_processor_.DecodeMusic(path);
@@ -94,7 +94,7 @@ void AssetProcessor::DecodeAssets(AssetsAnalyzer& assets_analyzer) {
   for (const auto& path : sounds_to_process) {
     std::cout << "--> decoding: " << path << std::endl;
     audio_processor_.DecodeSound(path);
-  }
+  }*/
 
   /// it also handles models textures (textures located inside the "models/")
   auto& models_to_process = assets_analyzer.GetModelsToProcess();
