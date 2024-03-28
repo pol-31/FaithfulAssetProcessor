@@ -4,10 +4,10 @@
 #include <fstream>
 #include <iostream>
 
-#include <stb_image.h>
-#include <stb_image_write.h>
+#include "stb_image.h"
+#include "stb_image_write.h"
 
-#include "../../config/AssetFormats.h"
+#include "../config/AssetFormats.h"
 
 TextureProcessor::TextureProcessor(
     AssetLoadingThreadPool& thread_pool,
@@ -40,14 +40,14 @@ void TextureProcessor::InitContext(astcenc_config config,
   if (status != ASTCENC_SUCCESS) {
     std::string error_string{"TextureProcessor::InitContext astcenc_config_init:\n"};
     error_string += astcenc_get_error_string(status);
-    throw std::runtime_error(std::move(error_string));
+    throw std::runtime_error(error_string);
   }
   status = astcenc_context_alloc(
       &config_copy, thread_pool_.GetThreadNumber(), &context);
   if (status != ASTCENC_SUCCESS) {
     std::string error_string{"TextureProcessor::InitContext astcenc_context_alloc:\n"};
     error_string += astcenc_get_error_string(status);
-    throw std::runtime_error(std::move(error_string));
+    throw std::runtime_error(error_string);
   }
 }
 
@@ -74,7 +74,7 @@ void TextureProcessor::Encode(const std::filesystem::path& path) {
       HasHdrPrefix(path)) {
     std::cerr
         << "Skipped: \"" << path
-        << "\" because it has the prefix \"hdr_\" for an LDR texture."
+        << R"(" because it has the prefix "hdr_" for an LDR texture.)"
         << "\nPlease rename it (\"hdr_\" is used in decompression as a hint)."
         << std::endl;
     return;
@@ -191,14 +191,14 @@ void TextureProcessor::Encode(const std::filesystem::path& out_path,
 }
 
 void TextureProcessor::WriteEncodedData(
-    std::string filename, unsigned int image_x, unsigned int image_y,
+    const std::filesystem::path& filename, int image_x, int image_y,
     int comp_data_size, std::unique_ptr<uint8_t[]> comp_data) {
   std::ofstream out_file(filename, std::ios::binary);
   if (!out_file.is_open()) {
     std::cerr << "Error: failed to create file for encoded data" << std::endl;
     return;
   }
-  AstcHeader header;
+  AstcHeader header{};
   header.magic[0] = 0x13;
   header.magic[1] = 0xAB;
   header.magic[2] = 0xA1;
@@ -290,7 +290,7 @@ void TextureProcessor::DecodeImpl(
 }
 
 void TextureProcessor::WriteDecodedData(
-    std::string filename, unsigned int image_x, unsigned int image_y,
+    const std::filesystem::path& filename, int image_x, int image_y,
     TextureCategory category, std::unique_ptr<uint8_t[]> image_data) {
   if (category != TextureCategory::kHdrRgb) {
     if (!stbi_write_png(filename.c_str(), image_x, image_y, 4,
@@ -323,7 +323,7 @@ bool TextureProcessor::ReadAstcFile(const std::string& path, int& width,
     std::cerr << "Error: texture loading failed: " << path << std::endl;
     return false;
   }
-  AstcHeader header;
+  AstcHeader header{};
   file.read(reinterpret_cast<char*>(&header), sizeof(AstcHeader));
 
   if (header.magic[0] != 0x13 || header.magic[1] != 0xAB ||
@@ -519,6 +519,8 @@ TextureProcessor::TextureConfig TextureProcessor::ProvideDecodeTextureConfig(
     TextureCategory category) {
   switch (category) {
     case TextureCategory::kLdrR:
+      [[fallthrough]];
+    case TextureCategory::kLdrRgb:
       return {
           "",
           faithful::config::kTextureSwizzleRgba,
@@ -530,14 +532,6 @@ TextureProcessor::TextureConfig TextureProcessor::ProvideDecodeTextureConfig(
       return {
           "",
           faithful::config::kTextureSwizzle0ra1,
-          context_ldr_,
-          category,
-          faithful::config::kTexLdrDataType
-      };
-    case TextureCategory::kLdrRgb:
-      return {
-          "",
-          faithful::config::kTextureSwizzleRgba,
           context_ldr_,
           category,
           faithful::config::kTexLdrDataType

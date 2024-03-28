@@ -13,7 +13,7 @@
 class AudioProcessor {
  public:
   AudioProcessor() = delete;
-  AudioProcessor(ReplaceRequest& replace_request);
+  explicit AudioProcessor(ReplaceRequest& replace_request);
 
   /// non-assignable because of member reference
   AudioProcessor(const AudioProcessor&) = delete;

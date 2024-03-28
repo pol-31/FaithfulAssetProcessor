@@ -48,10 +48,10 @@ class AssetsAnalyzer {
   void AnalyzeDir(const std::filesystem::path& path);
 
   void AddEntry(const std::filesystem::path& path);
-  void AddEntryImpl(const std::filesystem::path& new_asset,
-                    std::set<std::filesystem::path>& assets);
+  static void AddEntryImpl(const std::filesystem::path& new_asset,
+                           std::set<std::filesystem::path>& assets);
 
-  AssetCategory DeduceAssetCategory(const std::filesystem::path& path);
+  AssetCategory DeduceAssetCategory(const std::filesystem::path& path) const;
 
   std::set<std::filesystem::path> music_to_process_;
   std::set<std::filesystem::path> sounds_to_process_;

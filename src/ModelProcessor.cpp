@@ -2,7 +2,7 @@
 
 #include <iostream>
 
-#include "../../config/Paths.h"
+#include "../config/Paths.h"
 
 bool TinygltfLoadTextureStub(tinygltf::Image *image, const int image_idx,
                              std::string *err, std::string *warn, int req_width,
@@ -106,7 +106,7 @@ void ModelProcessor::CompressTextures() {
       processed_images_.insert((cur_model_path_.parent_path() / image.uri)
                                    .lexically_normal());
     }
-    auto model_texture_config = ProvideEncodeTextureConfig(i);
+    auto model_texture_config = ProvideEncodeTextureConfig(static_cast<int>(i));
 
     // forced 4 channels (see ctor)
     int total_len = image.width * image.height * 4;
@@ -126,8 +126,7 @@ void ModelProcessor::CompressTextures() {
 }
 
 void ModelProcessor::DecompressTextures() {
-  for (std::size_t i = 0; i < model_->images.size(); ++i) {
-    tinygltf::Image& image = model_->images[i];
+  for (auto& image : model_->images) {
     auto texture_path = (cur_model_path_.parent_path() / image.uri);
     processed_images_.insert(texture_path.string());
 

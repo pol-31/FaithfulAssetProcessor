@@ -7,7 +7,7 @@
 #include <string>
 #include <string_view>
 
-#include <tiny_gltf.h>
+#include "tiny_gltf.h"
 
 #include "TextureProcessor.h"
 #include "ReplaceRequest.h"
@@ -57,7 +57,7 @@ class ModelProcessor {
   /// filename stem as an input parameter
   ModelTextureConfig ProvideDecodeTextureConfig(std::string_view path);
 
-  void OptimizeModel(const std::string& path);
+  static void OptimizeModel(const std::string& path);
 
   /// in case if texture embedded, we directly ask texture processor to process
   TextureProcessor& texture_processor_;

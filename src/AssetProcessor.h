@@ -14,7 +14,8 @@
 
 class AssetProcessor {
  public:
-  AssetProcessor(int thread_count = std::thread::hardware_concurrency());
+  explicit AssetProcessor(
+      int thread_count = static_cast<int>(std::thread::hardware_concurrency()));
 
   /// neither movable nor copyable because of AssetLoadingThreadPool
   AssetProcessor(const AssetProcessor& other) = delete;

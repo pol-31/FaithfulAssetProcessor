@@ -3,7 +3,7 @@
 #include <exception>
 #include <iostream>
 
-#include "../../config/AssetFormats.h"
+#include "../config/AssetFormats.h"
 
 AssetsAnalyzer::AssetsAnalyzer(
     const std::filesystem::path& path, bool encode)
@@ -67,7 +67,7 @@ void AssetsAnalyzer::AddEntryImpl(const std::filesystem::path& new_asset,
 }
 
 AssetsAnalyzer::AssetCategory AssetsAnalyzer::DeduceAssetCategory(
-    const std::filesystem::path& path) {
+    const std::filesystem::path& path) const {
   if (encode_) { // order from more_supported_num to less
     for (const auto& extension : faithful::config::kModelCompFormats) {
       if (extension == path.extension()) {

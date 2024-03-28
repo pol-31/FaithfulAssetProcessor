@@ -69,7 +69,7 @@ void AssetProcessor::EncodeAssets(AssetsAnalyzer& assets_analyzer) {
   /// (if user_source_path had models textures located beyond the gltf file,
   /// they will be processed twice - by model_processor_ and texture_processor_,
   /// so we avoiding this)
-  auto all_textures_to_process = assets_analyzer.GetTexturesToProcess();
+  const auto& all_textures_to_process = assets_analyzer.GetTexturesToProcess();
   auto processed_textures = model_processor_.GetProcessedTextures();
   std::vector<std::string> textures_to_process;
   std::set_difference(
@@ -104,7 +104,7 @@ void AssetProcessor::DecodeAssets(AssetsAnalyzer& assets_analyzer) {
   }
 
   /// remove already processed by model_processor_
-  auto all_textures_to_process = assets_analyzer.GetTexturesToProcess();
+  const auto& all_textures_to_process = assets_analyzer.GetTexturesToProcess();
   auto processed_textures = model_processor_.GetProcessedTextures();
   std::vector<std::string> textures_to_process;
   std::set_difference(

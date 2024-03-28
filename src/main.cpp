@@ -2,14 +2,12 @@
  * - textures: .astc
  * - 3D models: .gltf
  *
- * See compress config in Faithful/config/AssetFormats.h
+ * See compress config in config/AssetFormats.h
  *
  * Supported:
  * - textures(images): bmp, hdr, HDR, jpeg, jpg, pgm, png, ppm, psd, tga;
  *     (for more information see faithful/external/stb/stb_image.h)
  * - 3D models: glb, gltf
- *
- * for audio, we just copy .wav to /sounds/ and .ogg to /music/
  * */
 
 #include <algorithm>
@@ -19,7 +17,7 @@
 #include <sstream>
 
 #include "AssetProcessor.h"
-#include "../../config/AssetFormats.h"
+#include "../config/AssetFormats.h"
 
 /// by default all assets have such info: id;name;
 /// except models: id;name;type;sound_ids;
@@ -77,7 +75,7 @@ void UpdateAssetsInfo(const std::filesystem::path& path,
       new_entry += ";;";
     }
     new_entry += '\n';
-    new_info_file.write(new_entry.data(), new_entry.size());
+    new_info_file.write(new_entry.data(), static_cast<long>(new_entry.size()));
   }
 }
 

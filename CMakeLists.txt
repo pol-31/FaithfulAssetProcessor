@@ -28,13 +28,13 @@ add_subdirectory(external EXCLUDE_FROM_ALL)
 configure_file(${CMAKE_SOURCE_DIR}/config/paths.h.in ${CMAKE_SOURCE_DIR}/config/Paths.h)
 
 add_executable(FaithfulAssetProcessor
-        main.cpp
-        AssetLoadingThreadPool.cpp
-        AssetProcessor.cpp
-        AssetsAnalyzer.cpp
-        AudioProcessor.cpp
-        ModelProcessor.cpp
-        TextureProcessor.cpp
+        src/main.cpp
+        src/AssetLoadingThreadPool.cpp
+        src/AssetProcessor.cpp
+        src/AssetsAnalyzer.cpp
+        src/AudioProcessor.cpp
+        src/ModelProcessor.cpp
+        src/TextureProcessor.cpp
 )
 
 add_dependencies(FaithfulAssetProcessor meshoptimizer)

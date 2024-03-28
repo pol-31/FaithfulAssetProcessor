@@ -25,7 +25,7 @@ void AssetLoadingThreadPool::Run() {
             return static_cast<bool>(threads_task_);
           });
         }
-        WorkAndWaitAll(i);
+        WorkAndWaitAll(static_cast<int>(i));
       }
     });
   }
@@ -49,7 +49,7 @@ void AssetLoadingThreadPool::Execute(TaskType task) {
   thread_tasks_ready_.notify_all();
 
   // because threads_size() == all_threads - 1, where 1 is Calling thread
-  WorkAndWaitAll(threads_.size());
+  WorkAndWaitAll(static_cast<int>(threads_.size()));
 }
 
 void AssetLoadingThreadPool::WorkAndWaitAll(int thread_id) {

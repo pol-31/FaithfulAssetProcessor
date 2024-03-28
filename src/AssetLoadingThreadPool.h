@@ -7,7 +7,7 @@
 #include <thread>
 #include <vector>
 
-#include <folly/Function.h>
+#include "Function.h"
 
 /// This is "blocking" thread pool what means it blocks thread from which
 /// Execute() was called. So for AssetLoadingThreadPool(8) it
@@ -23,7 +23,8 @@ class AssetLoadingThreadPool {
   /// int param for thread_id
   using TaskType = folly::Function<void(int)>;
 
-  AssetLoadingThreadPool(int thread_number = std::thread::hardware_concurrency());
+  explicit AssetLoadingThreadPool(
+      int thread_number = static_cast<int>(std::thread::hardware_concurrency()));
 
   /// neither copyable nor movable because of std::mutex members
   AssetLoadingThreadPool(const AssetLoadingThreadPool& other) = delete;
@@ -38,7 +39,7 @@ class AssetLoadingThreadPool {
   void Execute(TaskType task);
 
   int GetThreadNumber() const {
-    return threads_.size() + 1;
+    return static_cast<int>(threads_.size() + 1);
   }
 
  private:
@@ -61,8 +62,8 @@ class AssetLoadingThreadPool {
 
   /// usage: condition (threads_left_ == 0)
   /// in thread_tasks_ready_ waiting as a predicate stop_waiting
-  int threads_left_;
-  bool stopped_;
+  int threads_left_{0};
+  bool stopped_{false};
 };
 
 #endif  // FAITHFUL_UTILS_ASSETPROCESSOR_ASSETLOADINGTHREADPOOL_H

@@ -5,7 +5,7 @@
 #include <memory>
 #include <string>
 
-#include <astc-encoder/Source/astcenc.h>
+#include "astc-encoder/Source/astcenc.h"
 
 #include "AssetLoadingThreadPool.h"
 #include "ReplaceRequest.h"
@@ -80,28 +80,29 @@ class TextureProcessor {
   void DecodeImpl(const std::filesystem::path& path,
                   TextureConfig texture_config);
 
-  void WriteEncodedData(std::string filename, unsigned int image_x,
-                        unsigned int image_y, int comp_data_size,
-                        std::unique_ptr<uint8_t[]> comp_data);
-  void WriteDecodedData(std::string filename, unsigned int image_x,
-                        unsigned int image_y, TextureCategory category,
-                        std::unique_ptr<uint8_t[]> image_data);
+  static void WriteEncodedData(const std::filesystem::path& filename,
+                               int image_x, int image_y, int comp_data_size,
+                               std::unique_ptr<uint8_t[]> comp_data);
+  static void WriteDecodedData(const std::filesystem::path& filename,
+                               int image_x,
+                               int image_y, TextureCategory category,
+                               std::unique_ptr<uint8_t[]> image_data);
 
-  int CalculateCompLen(int image_x, int image_y);
+  static int CalculateCompLen(int image_x, int image_y);
 
   TextureConfig ProvideEncodeTextureConfig(const std::filesystem::path& path);
   TextureConfig ProvideEncodeTextureConfig(TextureCategory category);
   TextureConfig ProvideDecodeTextureConfig(const std::filesystem::path& path);
   TextureConfig ProvideDecodeTextureConfig(TextureCategory category);
 
-  bool ReadAstcFile(const std::string& path, int& width, int& height,
-                    int& comp_len, std::unique_ptr<uint8_t[]>& comp_data);
+  static bool ReadAstcFile(const std::string& path, int& width, int& height,
+                           int& comp_len, std::unique_ptr<uint8_t[]>& comp_data);
 
-  bool HasMapPrefix(const std::filesystem::path& path);
-  bool HasNoisePrefix(const std::filesystem::path& path);
-  bool HasFontPrefix(const std::filesystem::path& path);
-  bool HasHdrPrefix(const std::filesystem::path& path);
-  bool HasHdrExtension(const std::filesystem::path& path);
+  static bool HasMapPrefix(const std::filesystem::path& path);
+  static bool HasNoisePrefix(const std::filesystem::path& path);
+  static bool HasFontPrefix(const std::filesystem::path& path);
+  static bool HasHdrPrefix(const std::filesystem::path& path);
+  static bool HasHdrExtension(const std::filesystem::path& path);
 
   AssetLoadingThreadPool& thread_pool_;
   ReplaceRequest& replace_request_;
